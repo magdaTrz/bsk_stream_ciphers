@@ -1,4 +1,6 @@
 import random 
+import base64
+from simple_colors import *
 
 # tablica znaków która służy do generowania losowego hasła którym bedziemy kodować text
 letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k','l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 
@@ -25,28 +27,35 @@ def create_random_key_stream(length):
 
 
 # zamiana string na xor 
-def string_to_xor(string_1, string_2):
+def encode_string_to_xor(string_1, string_2):
 
     binary_1 = int.from_bytes(string_1.encode(), 'big')
     binary_2 = int.from_bytes(string_2.encode(), 'big')
     xor_result = binary_1 ^ binary_2
-    result = xor_result.to_bytes((xor_result.bit_length() + 7) // 8, 'big').decode()
+    result = base64.b64encode(xor_result.to_bytes((xor_result.bit_length() + 7) // 8, 'big')).decode()
 
-
-    print("         string_to_xor():")
-    print(f"         {string_1} = {binary_1}")
-    print(f"         {string_2} = {binary_2}")
-    print(f"         xor_result = {xor_result}")
-    print(f"         result = {result}")
+    print(f"\n         Pseudo losowy Klucz: {string_2}")
+    print(f"         Szyfr: \033[91m{result}\033[0m")
     return result
 
 
+def decode_xor_to_string(xor_result, key):
+    bytes_1 = base64.b64decode(xor_result.encode())
+    binary_1 = int.from_bytes(bytes_1, 'big')
+    binary_2 = int.from_bytes(key.encode(), 'big')
+    xor_result = binary_1 ^ binary_2
+    result_bytes = xor_result.to_bytes((xor_result.bit_length() + 7) // 8, 'big')
+    result = xor_result.to_bytes((xor_result.bit_length() + 7) // 8, 'big').decode()
+
+    print(f"\n         Tekst odkodowany: \033[91m{result}\033[0m")
+
+    return result
 
 answer = True
 while answer :
     print ("""
-    -------------------------------------------
-    Szyfry strumieniowe
+    ______________________________________________
+    \033[1m S z y f r y  s t r u m i e n i o w e \033[0m
 
     1. Zakoduj tekst
     2. Dekoduj tekst
@@ -54,20 +63,20 @@ while answer :
     """)
     answer = input("    Co wykonać? ")
     if answer=="1" : 
-        print("\n         KODOWANIE") 
+        print("\033[1m" + "\n         KODOWANIE" + "\033[0m") 
         try : 
-            text = str(input("         Jaki tekst chcesz zakodować? "))
+            text = str(input("         Jaki tekst chcesz zakodować?  \n         Tekst który chcemy zakodować:  "))
             key = str(create_random_key_stream(len(text)))
-            string_to_xor(text, key)
+            encode_string_to_xor(text, key)
         except ValueError:
             print("\n    Kodowanie - Coś poszło nie tak.")
     elif answer=="2" :
 
-        print("\n         DEKODOWANIE")
+        print("\033[1m" + "\n         DEKODOWANIE" + "\033[0m")
         try : 
-            xor = str(input("         Podaj zakodowany wyraz? "))
-            key = str(input("         Podaj kod? "))
-            string_to_xor(xor, key)
+            xor = str(input("         Jaki szyfr chcesz odkodować?  \n         Podaj szyfr:  "))
+            key = str(input("         Podaj klucz:  "))
+            decode_xor_to_string(xor, key)
         except ValueError:
             print("\n    Dekodowanie - Coś poszło nie tak.")
     elif answer=="3" :
