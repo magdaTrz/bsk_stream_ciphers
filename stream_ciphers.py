@@ -26,21 +26,23 @@ def create_random_key_stream(length):
 
 # zamiana string na xor 
 def string_to_xor(string_1, string_2):
-    print("         string_to_xor():")
+
     binary_1 = int.from_bytes(string_1.encode(), 'big')
     binary_2 = int.from_bytes(string_2.encode(), 'big')
+    xor_result = binary_1 ^ binary_2
+    result = xor_result.to_bytes((xor_result.bit_length() + 7) // 8, 'big').decode()
+
+
+    print("         string_to_xor():")
     print(f"         {string_1} = {binary_1}")
     print(f"         {string_2} = {binary_2}")
-    xor_result = binary_1 ^ binary_2
     print(f"         xor_result = {xor_result}")
-    result = xor_result.to_bytes((xor_result.bit_length() + 7) // 8, 'big').decode()
     print(f"         result = {result}")
-
     return result
 
 
 
-answer= True
+answer = True
 while answer :
     print ("""
     -------------------------------------------
@@ -58,7 +60,7 @@ while answer :
             key = str(create_random_key_stream(len(text)))
             string_to_xor(text, key)
         except ValueError:
-            print("Coś poszło nie tak.")
+            print("\n    Kodowanie - Coś poszło nie tak.")
     elif answer=="2" :
 
         print("\n         DEKODOWANIE")
@@ -67,8 +69,9 @@ while answer :
             key = str(input("         Podaj kod? "))
             string_to_xor(xor, key)
         except ValueError:
-            print("Coś poszło nie tak.")
+            print("\n    Dekodowanie - Coś poszło nie tak.")
     elif answer=="3" :
-        print("\n Zamknięto!") 
+        print("\n    Zamknięto!")
+        answer = False 
     elif answer !="" :
-        print("\n Zła opcja. ") 
+        print("\n    Zła opcja. ") 
